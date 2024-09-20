@@ -2,7 +2,7 @@ import urllib.parse
 
 
 class Manufacturer:
-	def __init__(self, name, slug: str or None = None, description: str or None = None):
+	def __init__(self, name, description: str, slug: str or None = None):
 		self.name = name
 		self.slug = slug
 		if self.slug is None:
@@ -13,6 +13,12 @@ class Manufacturer:
 		yield 'name', self.name
 		yield 'slug', self.slug
 		yield 'description', self.description
+
+	def __repr__(self):
+		return str(dict(self))
+
+	def __json__(self):
+		return dict(self)
 
 
 class DeviceType:
@@ -28,6 +34,12 @@ class DeviceType:
 		yield 'model', self.model
 		yield 'slug', self.slug
 
+	def __repr__(self):
+		return str(dict(self))
+
+	def __json__(self):
+		return dict(self)
+
 
 class DeviceRole:
 	def __init__(self, name: str, slug: str or None = None, color: str = '00ff00'):
@@ -42,6 +54,12 @@ class DeviceRole:
 		yield 'slug', self.slug
 		yield 'color', self.color
 
+	def __repr__(self):
+		return str(dict(self))
+
+	def __json__(self):
+		return dict(self)
+
 
 class Site:
 	def __init__(self, name: str, slug: str or None = None):
@@ -54,15 +72,29 @@ class Site:
 		yield 'name', self.name
 		yield 'slug', self.slug
 
+	def __repr__(self):
+		return str(dict(self))
+
+	def __json__(self):
+		return dict(self)
+
 
 class DeviceIp4:
-	def __init__(self, address: str, description: str or None = None):
+	def __init__(self, address: str, description: str, status='active'):
 		self.address = address
 		self.description = description
+		self.status = status
 
 	def __iter__(self):
 		yield 'address', self.address
 		yield 'description', self.description
+		yield 'status', self.status
+
+	def __repr__(self):
+		return str(dict(self))
+
+	def __json__(self):
+		return dict(self)
 
 
 class Device:
@@ -72,23 +104,24 @@ class Device:
 			device_type: DeviceType,
 			role: DeviceRole,
 			site: Site,
-			face: str,
-			address: DeviceIp4 or None,
+			primary_ip4: DeviceIp4 or None,
 	):
-		if face not in ('front', 'rear'):
-			raise ValueError('Face must be either front or rear')
 		self.device_type = device_type
 		self.role = role
 		self.site = site
-		self.face = face
-		self.address = address
-		self.name = name
+		self.primary_ip4 = primary_ip4
+		self.name = name.replace('.', '_')
 
 	def __iter__(self):
 		yield 'name', self.name
-		yield 'device_type', self.device_type
-		yield 'role', self.role
-		yield 'site', self.site
-		yield 'face', self.face
-		yield 'address', self.address
+		yield 'device_type', dict(self.device_type)
+		yield 'role', dict(self.role)
+		yield 'site', dict(self.site)
+		yield 'primary_ip4', dict(self.primary_ip4)
+
+	def __repr__(self):
+		return str(dict(self))
+
+	def __json__(self):
+		return dict(self)
 

@@ -18,12 +18,12 @@ class BaseApi:
 		self.session.headers.update({'Authorization': f'Token {api_key}'})
 
 	def _get(self, url: str, params: dict = None) -> dict:
-		logger.debug('GET ' + self.base_url + url + ' | ' + json.dumps(params))
+		# logger.debug('GET ' + self.base_url + url + ' | ' + json.dumps(params))
 		resp = self.session.get(self.base_url + url, params=params)
 		return resp.json()
 
 	def _post(self, url: str, params: dict = None, data: dict = None):
-		logger.debug('POST ' + self.base_url + url + ' | ' + json.dumps(params) + ' | ' + json.dumps(data))
+		# logger.debug('POST ' + self.base_url + url + ' | ' + json.dumps(params) + ' | ' + json.dumps(data))
 		resp = self.session.post(self.base_url + url, json=data, params=params)
 		return resp.json()
 
@@ -47,3 +47,15 @@ class BaseApi:
 
 	def add_device_role(self, role: DeviceRole):
 		return self._post('/dcim/device-roles/', data=dict(role))
+
+	def get_sites(self):
+		return self._get('/dcim/sites/')
+
+	def add_device(self, device: Device):
+		return self._post('/dcim/devices/', data=dict(device))
+
+	def get_ip_addresses(self):
+		return self._get('/ipam/ip-addresses/')
+
+	def add_ip_address(self, ip_address: DeviceIp4):
+		return self._post('/ipam/ip-addresses/', data=dict(ip_address))
